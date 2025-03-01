@@ -55,9 +55,8 @@ fn main()  -> Result<()> {
     let args = Args::parse();
 
     let mut context = Context::new()?;
-    let (mut device, mut handle) =
+    let (_device, handle) =
         open_device(&mut context, VENDOR_HID, PRODUCT_HID).expect("Failed to open USB device");
-
 
     if args.toggle_mode {
         let ctrl_buf : [u8; 2] = [1, 5];
@@ -66,11 +65,19 @@ fn main()  -> Result<()> {
         let value : u16 = 0;
         let index : u16 = 9;
         let timeout : Duration = Duration::from_secs(1);
-        handle.write_control(request_type, request, value, index, &ctrl_buf, timeout);
+        match handle.write_control(request_type, request, value, index, &ctrl_buf, timeout)
+        {
+            Ok(_) => {}
+            Err(err) => println!("Could not read from endpoint: {}", err),
+        }
 
         let ctrl_buf : [u8; 2] = [5, 0];
         let index : u16 = 8;
-        handle.write_control(request_type, request, value, index, &ctrl_buf, timeout);
+        match handle.write_control(request_type, request, value, index, &ctrl_buf, timeout)
+        {
+            Ok(_) => {}
+            Err(err) => println!("Could not read from endpoint: {}", err),
+        }
 
         println!("Switching from HID proxy to HCI mode.\n");
     }
@@ -81,11 +88,19 @@ fn main()  -> Result<()> {
         let value : u16 = 0;
         let index : u16 = 9;
         let timeout : Duration = Duration::from_secs(1);
-        handle.write_control(request_type, request, value, index, &ctrl_buf, timeout);
+        match handle.write_control(request_type, request, value, index, &ctrl_buf, timeout)
+        {
+            Ok(_) => {}
+            Err(err) => println!("Could not read from endpoint: {}", err),
+        }
 
         let ctrl_buf : [u8; 2] = [6, 0];
         let index : u16 = 8;
-        handle.write_control(request_type, request, value, index, &ctrl_buf, timeout);
+        match handle.write_control(request_type, request, value, index, &ctrl_buf, timeout)
+        {
+            Ok(_) => {}
+            Err(err) => println!("Could not read from endpoint: {}", err),
+        }
 
         println!("Pairings cleared.\n");
     }
